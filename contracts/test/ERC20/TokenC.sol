@@ -33,4 +33,7 @@ contract TokenC is ERC20 {
 
     _burn(from, amount);
   }
+
+  // NOTE: exclude this dummy token implementation from test coverage report
+  function test() private { }
 }

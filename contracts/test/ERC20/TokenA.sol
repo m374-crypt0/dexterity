@@ -44,4 +44,7 @@ contract TokenA is ERC20 {
   function setApproveToFail(bool value) external {
     approveMustFail_ = value;
   }
+
+  // NOTE: exclude this dummy token implementation from test coverage report
+  function test() private { }
 }

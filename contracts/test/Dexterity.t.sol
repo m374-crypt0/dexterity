@@ -651,11 +651,11 @@ contract SwapTests is DexterityTests {
     vm.expectEmit(true, true, true, false);
     emit IDexterity.Swapped(alice, usdcToken, wEthToken, 0, 0);
 
-    dex.swapOut(wEthToken, 0.000023 ether, usdcToken);
+    dex.swapOut(wEthToken, 0.000_023 ether, usdcToken);
 
     vm.stopPrank();
 
-    assertEq(IERC20(wEthToken).balanceOf(alice), 0.000023 ether);
+    assertEq(IERC20(wEthToken).balanceOf(alice), 0.000_023 ether);
     assertGt(IERC20(usdcToken).balanceOf(dex.creator()), 0);
     assertGt(IERC20(usdcToken).balanceOf(alice), 0);
     assertEq(IERC20(usdcToken).allowance(alice, address(dex)), 0);

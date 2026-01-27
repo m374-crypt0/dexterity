@@ -19,4 +19,7 @@ contract SepoliaDeployScript is Script {
 
     vm.stopBroadcast();
   }
+
+  // NOTE: exclude this script from test coverage report
+  function test() private { }
 }

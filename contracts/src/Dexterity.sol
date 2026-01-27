@@ -214,8 +214,9 @@ contract Dexterity is IDexterity {
     try router.swapExactTokensForTokens(amountMinusCreatorFee, 0, path, msg.sender, type(uint256).max) returns (
       uint256[] memory /*ignored*/
     ) {
-      // ignore return value, unuseful in Dexterity
-    } catch (bytes memory) {
+    // ignore return value, unuseful in Dexterity
+    }
+    catch (bytes memory) {
       revert SwapUniswapForwardFailure();
     }
   }
@@ -247,8 +248,9 @@ contract Dexterity is IDexterity {
     try router.swapTokensForExactTokens(amountOut, tokenInAllowance, path, msg.sender, type(uint256).max) returns (
       uint256[] memory /*ignored*/
     ) {
-      //ignore return value, unuseful in Dexterity
-    } catch (bytes memory) {
+    //ignore return value, unuseful in Dexterity
+    }
+    catch (bytes memory) {
       revert SwapUniswapForwardFailure();
     }
 
@@ -270,8 +272,9 @@ contract Dexterity is IDexterity {
     view
     returns (uint128 reserveIn, uint128 reserveOut)
   {
-    (reserveIn, reserveOut) =
-      tokenIn == pool.firstToken ? (pool.firstReserve, pool.secondReserve) : (pool.secondReserve, pool.firstReserve);
+    (reserveIn, reserveOut) = tokenIn == pool.firstToken
+      ? (pool.firstReserve, pool.secondReserve)
+      : (pool.secondReserve, pool.firstReserve);
   }
 
   function updateReserves_(Pool storage pool, address tokenIn, address tokenOut, uint128 amountIn, uint128 amountOut)
