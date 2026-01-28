@@ -10,6 +10,11 @@ intended to be used as-is in production.
 
 ### Security and design choices
 
+- Driven by EVM gas constraints in mind
+- re-entrancy mitigations and guard checks
+- No oracle to ensure price are fair. This is deliberate and left to be
+  implemented in the future if relevant or needed.
+
 #### why UniswapV2 and not V3 or V4?
 
 Simplicity and understandability. Though v2 is not the most recent version,
@@ -33,7 +38,7 @@ is a pair of token and liquidity, hold in a mapping)
   token amount.
   For a real production project, I would have bound swapIn and swapOut
   functions to ensure front running cannot drain input user token used for
-  trading.
+  trading by using a sandwich-attack.
 
 ## setup
 
