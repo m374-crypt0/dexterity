@@ -1,6 +1,6 @@
 # dexterity
 
-[![Tests](https://github.com/m374-crypt0/dexterity/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/m374-crypt0/dexterity/actions/workflows/test.yaml)
+[![CI](https://github.com/m374-crypt0/dexterity/actions/workflows/ci.yaml/badge.svg)](https://github.com/m374-crypt0/dexterity/actions/workflows/ci.yaml)
 ![Coverage](https://codecov.io/gh/m374-crypt0/dexterity/branch/main/graph/badge.svg)
 
 A decentralized exchange system inspired by Uniswap V2.

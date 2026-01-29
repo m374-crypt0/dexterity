@@ -1,5 +1,8 @@
 # Dexterity smart contracts
 
+[![CI](https://github.com/m374-crypt0/dexterity/actions/workflows/ci.yaml/badge.svg)](https://github.com/m374-crypt0/dexterity/actions/workflows/ci.yaml)
+![Coverage](https://codecov.io/gh/m374-crypt0/dexterity/branch/main/graph/badge.svg)
+
 Built with [foundry](https://github.com/foundry-rs/foundry).
 Powered by `GNU make`.
 

@@ -1,15 +1,18 @@
-name: Coverage
+name: CI
 
 on:
   push:
-    branches: [main]
-    paths-ignore:
-      - "**/coverage.svg"
+    branches:
+      - main
 
 jobs:
-  coverage:
+  ci:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        target:
+          - test
+          - coverage
     steps:
       - name: checkout repository
         uses: actions/checkout@main
@@ -25,11 +28,11 @@ jobs:
           echo MAINNET_FORK_BLOCK=${{ secrets.MAINNET_FORK_BLOCK }} >> ./contracts/.env
           echo PRIVATE_KEY=${{ secrets.PRIVATE_KEY }} >> ./contracts/.env
           echo ETHERSCAN_API_KEY=${{ secrets.ETHERSCAN_API_KEY }} >> ./contracts/.env
-      - name: Report coverage info in lcov.info
-        run: make -C ./contracts coverage_ci
+      - name: Execute ${{ matrix.target }}
+        run: make -C ./contracts ${{ matrix.target == 'test' && 'test' || 'coverage_ci' }}
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
+        if: matrix.target == 'coverage'
+        uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./contracts/lcov.info
-          fail_ci_if_error: true
