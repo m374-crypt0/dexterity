@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/m374-crypt0/dexterity/actions/workflows/ci.yaml/badge.svg)](https://github.com/m374-crypt0/dexterity/actions/workflows/ci.yaml)
 ![Coverage](https://codecov.io/gh/m374-crypt0/dexterity/branch/main/graph/badge.svg)
+[![Slither no High Vulnerabilities](https://github.com/m374-crypt0/dexterity/actions/workflows/slither_no_high_vulnerability.yaml/badge.svg)](https://github.com/m374-crypt0/dexterity/actions/workflows/slither_no_high_vulnerability.yaml)
 
 Built with [foundry](https://github.com/foundry-rs/foundry).
 Powered by `GNU make`.
