@@ -2,17 +2,18 @@
 pragma solidity 0.8.30;
 
 import { IDexterity } from "./interface/IDexterity.sol";
-
 import { IUniswapV2Router02 } from "./interface/IUniswapV2Router02.sol";
-import { Maths } from "./library/Maths.sol";
+
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+import { Maths } from "./library/Maths.sol";
+
 import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 using SafeERC20 for IERC20;
 
 contract Dexterity is IDexterity {
   address private immutable creator_;
-  bool locked_;
 
   mapping(uint256 poolId => Pool) private pools_;
   mapping(uint256 poolId => mapping(address holder => uint128)) private holderPoolShares_;
@@ -36,10 +37,7 @@ contract Dexterity is IDexterity {
     return holderPoolShares_[computePoolId_(firstToken, secondToken)][holder];
   }
 
-  function deposit(address firstToken, address secondToken, uint128 firstAmount, uint128 secondAmount)
-    external
-    override
-  {
+  function deposit(address firstToken, address secondToken, uint128 firstAmount, uint128 secondAmount) external {
     require(firstToken != address(0) && secondToken != address(0), DepositZeroAddress());
     require(firstToken != secondToken, DepositSameToken());
     require(firstAmount > 0 && secondAmount > 0, DepositInvalidAmount());
@@ -79,7 +77,7 @@ contract Dexterity is IDexterity {
     IERC20(secondToken).safeTransferFrom(msg.sender, address(this), secondAmount);
   }
 
-  function withdraw(address firstToken, address secondToken, uint128 shares) external override {
+  function withdraw(address firstToken, address secondToken, uint128 shares) external {
     uint256 poolId = computePoolId_(firstToken, secondToken);
 
     require(shares > 0 && holderPoolShares_[poolId][msg.sender] >= shares, WithdrawNotEnoughShares());
@@ -117,7 +115,7 @@ contract Dexterity is IDexterity {
     IERC20(secondToken).safeTransfer(msg.sender, secondTokenAmount);
   }
 
-  function swapIn(address tokenIn, uint128 amountIn, address tokenOut) external override {
+  function swapIn(address tokenIn, uint128 amountIn, address tokenOut) external {
     require(tokenIn != tokenOut, SwapSameToken());
     require(amountIn > 0, SwapInvalidAmount());
 
@@ -146,7 +144,7 @@ contract Dexterity is IDexterity {
     IERC20(tokenOut).safeTransfer(msg.sender, amountOut);
   }
 
-  function swapOut(address tokenOut, uint128 amountOut, address tokenIn) external override {
+  function swapOut(address tokenOut, uint128 amountOut, address tokenIn) external {
     require(tokenOut != tokenIn, SwapSameToken());
     require(amountOut > 0, SwapInvalidAmount());
 
@@ -179,18 +177,7 @@ contract Dexterity is IDexterity {
     return uint256(keccak256(abi.encodePacked(bytes20(firstToken) ^ bytes20(secondToken))));
   }
 
-  modifier preventReentrancy() {
-    require(!locked_, DexterityReentrancy());
-
-    locked_ = true;
-    _;
-    locked_ = false;
-  }
-
-  function uniswapSwapExactTokensForTokens_(address tokenIn, uint256 amountIn, address tokenOut)
-    internal
-    preventReentrancy
-  {
+  function uniswapSwapExactTokensForTokens_(address tokenIn, uint256 amountIn, address tokenOut) internal {
     emit Swapped(msg.sender, tokenIn, tokenOut, 0, 0);
 
     IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), amountIn);
@@ -221,10 +208,7 @@ contract Dexterity is IDexterity {
     }
   }
 
-  function uniswapSwapTokensForExactTokens_(address tokenOut, uint256 amountOut, address tokenIn)
-    internal
-    preventReentrancy
-  {
+  function uniswapSwapTokensForExactTokens_(address tokenOut, uint256 amountOut, address tokenIn) internal {
     emit Swapped(msg.sender, tokenIn, tokenOut, 0, 0);
 
     uint256 tokenInAllowance = IERC20(tokenIn).allowance(msg.sender, address(this));
@@ -243,20 +227,17 @@ contract Dexterity is IDexterity {
     path[0] = tokenIn;
     path[1] = tokenOut;
 
-    uint256 tokenInBalanceBeforeSwap = IERC20(tokenIn).balanceOf(address(this));
-
+    uint256 spent;
     try router.swapTokensForExactTokens(amountOut, tokenInAllowance, path, msg.sender, type(uint256).max) returns (
-      uint256[] memory /*ignored*/
+      uint256[] memory amounts /*ignored*/
     ) {
-    //ignore return value, unuseful in Dexterity
-    }
-    catch (bytes memory) {
+      spent = amounts[0];
+    } catch (bytes memory) {
       revert SwapUniswapForwardFailure();
     }
 
     uint256 tokenInBalanceAfterSwap = IERC20(tokenIn).balanceOf(address(this));
 
-    uint256 spent = tokenInBalanceBeforeSwap - tokenInBalanceAfterSwap;
     uint256 creatorFee = spent * 2 / 1000;
 
     require(tokenInBalanceAfterSwap > creatorFee, SwapUniswapForwardFailure());
