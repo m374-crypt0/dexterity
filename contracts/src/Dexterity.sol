@@ -13,6 +13,8 @@ import { SafeERC20 } from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.s
 using SafeERC20 for IERC20;
 
 contract Dexterity is IDexterity {
+  address constant UNISWAP_V2_ROUTER = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
+
   address private immutable creator_;
 
   mapping(uint256 poolId => Pool) private pools_;
@@ -185,13 +187,11 @@ contract Dexterity is IDexterity {
 
     uint256 amountMinusCreatorFee = amountIn * 998 / 1000; // creator fee model: 0.02%
 
-    address uniswap = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
-
-    if (!IERC20(tokenIn).approve(uniswap, amountMinusCreatorFee)) {
+    if (!IERC20(tokenIn).approve(UNISWAP_V2_ROUTER, amountMinusCreatorFee)) {
       revert SwapUniswapForwardFailure();
     }
 
-    IUniswapV2Router02 router = IUniswapV2Router02(uniswap);
+    IUniswapV2Router02 router = IUniswapV2Router02(UNISWAP_V2_ROUTER);
 
     address[] memory path = new address[](2);
 
@@ -214,13 +214,11 @@ contract Dexterity is IDexterity {
     uint256 tokenInAllowance = IERC20(tokenIn).allowance(msg.sender, address(this));
     IERC20(tokenIn).safeTransferFrom(msg.sender, address(this), tokenInAllowance);
 
-    address uniswap = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
-
-    if (!IERC20(tokenIn).approve(uniswap, tokenInAllowance)) {
+    if (!IERC20(tokenIn).approve(UNISWAP_V2_ROUTER, tokenInAllowance)) {
       revert SwapUniswapForwardFailure();
     }
 
-    IUniswapV2Router02 router = IUniswapV2Router02(uniswap);
+    IUniswapV2Router02 router = IUniswapV2Router02(UNISWAP_V2_ROUTER);
 
     address[] memory path = new address[](2);
 
