@@ -1,17 +1,15 @@
 # dexterity
 
-An EVM compatible decentralized exchange working with ERC20 tokens.
+[![Tests](https://github.com/m374-crypt0/dexterity/actions/workflows/test.yaml/badge.svg?branch=main)](https://github.com/m374-crypt0/dexterity/actions/workflows/test.yaml)
+
+A decentralized exchange system inspired by Uniswap V2.
 
 ## Layout
 
 It's a mono repo.
 Contains :
 
-- The frontend (raw, unfinished)
-- The backend (some read contract endpoints)
-- The protocol (some desirable feature of a DEX, not finished, super clean and
-  super  tested too though).
-
-## More docs
-
-Take a look in each project of the repo.
+- The frontend (Proof of concept, not production ready)
+- The backend (reconstructing data off-chain for gas saving reasons)
+- The protocol (Inspired by Uniswap V2, see [README](./contracts/README.md) for
+  more details)
