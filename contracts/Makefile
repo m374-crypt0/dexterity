@@ -32,6 +32,10 @@ watchv:
 coverage:
 	@cd $(MAKEFILE_DIR) && forge coverage
 
+.PHONY: coverage_ci
+coverage_ci:
+	@cd $(MAKEFILE_DIR) && forge coverage --report lcov
+
 .PHONY: local_deploy
 local_deploy: test
 	@$(MAKE) run script=LocalDeploy
